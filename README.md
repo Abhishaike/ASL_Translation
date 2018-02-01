@@ -8,7 +8,7 @@
 You'll have to repeat step 3 if you ever navigate to a different directory~
 
 
-
+***************************************
 
 
 **Want to save training data? Follow step 1 for hand-data, or step 2 for non-hand-data**
