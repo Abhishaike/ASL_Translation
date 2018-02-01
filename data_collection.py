@@ -12,7 +12,7 @@ def collect_specific_hand(character_wanted, name):
     else:
         os.makedirs("hand/%s" % character_wanted)
     print("Starting data collection for character", character_wanted, "in 5 seconds, get ready...")
-    time.sleep(3)
+    time.sleep(5)
     print("Collecting now!")
     num_of_images = 50
     while True and num_of_images != 0:
@@ -25,7 +25,7 @@ def collect_specific_hand(character_wanted, name):
 def collect_not_hand(name):
     vs = VideoStream().start()
     print("Starting data collection for non-hands in 5 seconds, get ready...")
-    time.sleep(3)
+    time.sleep(5)
     print("Collecting now!")
     num_of_images = 200
     while True and num_of_images != 0:
