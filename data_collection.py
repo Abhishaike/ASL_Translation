@@ -6,7 +6,7 @@ import argparse
 import sys
 
 def collect_specific_hand(character_wanted, name):
-    vs = VideoStream(1).start() #start up the video stream
+    vs = VideoStream(-1).start() #start up the video stream
     if os.path.exists("hand/%s" % character_wanted): #if you don't have a file for the character you specified, it'll be created
         pass
     else:
@@ -24,7 +24,7 @@ def collect_specific_hand(character_wanted, name):
     return True
 
 def collect_not_hand(name):
-    vs = VideoStream(1).start()
+    vs = VideoStream(-1).start()
     print("Starting data collection for non-hands in 5 seconds, get ready...")
     time.sleep(5)
     print("Collecting now!")
