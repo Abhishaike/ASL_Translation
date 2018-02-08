@@ -3,7 +3,7 @@ from PIL import Image
 import os
 import time
 import argparse
-
+import sys
 
 def collect_specific_hand(character_wanted, name):
     vs = VideoStream(1).start() #start up the video stream
@@ -49,4 +49,4 @@ if __name__ == "__main__":
         collect_not_hand(args["name"].lower())
     else:
         collect_specific_hand(args["character"].lower(), args["name"].lower())
-
+    sys.exit(0)
