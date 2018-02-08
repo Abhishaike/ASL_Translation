@@ -21,6 +21,7 @@ def collect_specific_hand(character_wanted, name):
         im = Image.fromarray(frame)
         im.save("hand/%s/%s.png" % (character_wanted, name + str(num_of_images))) #save it into created file
     print("Done!")
+    return True
 
 def collect_not_hand(name):
     vs = VideoStream().start()
@@ -34,7 +35,7 @@ def collect_not_hand(name):
         im = Image.fromarray(frame)
         im.save("not_hand/%s.png" % (name + str(num_of_images)))
     print("Done!")
-
+    return True
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()
