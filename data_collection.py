@@ -6,10 +6,13 @@ import argparse
 
 
 def collect_specific_hand(character_wanted, name):
-    vs = VideoStream().start() #start up the video stream
+    vs = VideoStream(1).start() #start up the video stream
     if os.path.exists("hand/%s" % character_wanted): #if you don't have a file for the character you specified, it'll be created
+        print("test")
+        print(os.path.exists("hand/%s"%character_wanted))
         pass
     else:
+        print("test2")
         os.makedirs("hand/%s" % character_wanted)
     print("Starting data collection for character", character_wanted, "in 5 seconds, get ready...")
     time.sleep(5)
@@ -21,11 +24,12 @@ def collect_specific_hand(character_wanted, name):
         im = Image.fromarray(frame)
         im.save("hand/%s/%s.png" % (character_wanted, name + str(num_of_images))) #save it into created file
     print("Done!")
+    return True
 
 def collect_not_hand(name):
-    vs = VideoStream().start()
+    vs = VideoStream(1).start()
     print("Starting data collection for non-hands in 5 seconds, get ready...")
-    time.sleep(5)
+    time.sleep(5)   
     print("Collecting now!")
     num_of_images = 200
     while True and num_of_images != 0:
@@ -34,6 +38,7 @@ def collect_not_hand(name):
         im = Image.fromarray(frame)
         im.save("not_hand/%s.png" % (name + str(num_of_images)))
     print("Done!")
+    return True
 
 
 if __name__ == "__main__":
