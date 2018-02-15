@@ -30,4 +30,4 @@ for (x, y, window) in sliding_window(image, stepSize=32, windowSize=(winW, winH)
 		cv2.waitKey(1)
 		time.sleep(0.05)
 		
-#sliding_window(0, 10, 10)
+sliding_window(0, 10, 10)
