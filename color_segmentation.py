@@ -19,7 +19,8 @@ args = vars(ap.parse_args())
 
 # load the image
 img = cv2.imread(args["image"])
-img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+cv2.imwrite('test.png',img)
 img = img[::2, ::2]
 #print(img)
 segments_fz = felzenszwalb(img, scale=1, sigma=0.9, min_size=1000)
@@ -45,14 +46,14 @@ for i in range(len(img)):
     for j in range(len(img[i])):
         # chooses the segment that has the color of the hand
         #print(img[i,j])
-        if(abs(img[i,j][0] - 148 < 12)and abs(img[i,j][1] - 95 < 25) and abs(img[i,j][2]- 200 < 25)):
+        if(abs(img[i,j][0] - 141 < 2)and abs(img[i,j][1] - 139 < 2) and abs(img[i,j][2]- 181 < 2)):
             segmentColor = segments_fz[i,j]
             has_color = True
     if(has_color):
         break
 for i in range(len(segments_fz)):
     for y in range(len(segments_fz[i])):
-        if(segments_fz[i][y]==7):
+        if(segments_fz[i][y]==6):
             segments_fz[i][y] = 1
             print(img[i][y])
             img[i,y] = [255,255,255]
@@ -64,7 +65,8 @@ print(segmentColor)
 #print(mark_boundaries(img, segments_fz))
 ax[0, 0].imshow(mark_boundaries(img, segments_fz))
 ax[0, 0].set_title("Felzenszwalbs's method")
-
+plt.tight_layout()
+plt.show()
 # k means
 # image = cv2.GaussianBlur(image, (11, 11), 2)
 # Z=image.reshape((-1,3))
