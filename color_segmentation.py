@@ -83,7 +83,7 @@ print(cnts)
 # make a bounding box to the hand
 # later make the box size constant so that HOGS works well
 x,y,w,h = cv2.boundingRect(cnts[0])
-cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+cv2.rectangle(original_image,(x,y),(x+w,y+h),(0,255,0),2)
 cv2.imshow("Hand contours with bounding box",original_image)
 #close the image window when a key is pressed
 cv2.waitKey(0)
