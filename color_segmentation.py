@@ -24,11 +24,9 @@ img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
 img = img[::2, ::2]
 # save a copy
-original_image = img
+original_image = img.copy()
 #print(img)
 segments_fz = felzenszwalb(img, scale=1, sigma=0.9, min_size=1000)
-
-print("Felzenszwalb number of segments: {}".format(len(np.unique(segments_fz))))
 fig, ax = plt.subplots(2, 2, figsize=(10, 10), sharex=True, sharey=True,
                  subplot_kw={'adjustable': 'box-forced'})
 # returns the index of unique segments in a flattened array
@@ -46,10 +44,9 @@ upper_blue = np.array([130, 255, 255])
 rangeMask = cv2.inRange(hsv, lower_blue, upper_blue)
 # apply color mask
 img = cv2.bitwise_and(img,img,mask = rangeMask)
-# convert to gray scale
-gray_img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+
 # threshold the image to remove random blue noise from the image
-_,thresh = cv2.threshold(gray_img,127,255,cv2.THRESH_BINARY)
+_,thresh = cv2.threshold(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),127,255,cv2.THRESH_BINARY)
 #cv2.imwrite("test.3.png",thresh)
 for i in range(len(img)):
     for j in range(len(img[i])):
@@ -76,21 +73,22 @@ for i in range(len(segments_fz)):
 #print(segmentColor)
 # test if the whole hand was extracted
 #cv2.imwrite("test2.png",img)
-
-# # calculated contours
-# _,cnts,_ = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-# # sort contours from highest to lowest
-# cnts= sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
-# cv2.drawContours(original_image, cnts, 0, (0, 255, 0), 3)
-# # make a bounding box to the hand
-# # later make the box size constant so that HOGS works well
-# x,y,w,h = cv2.boundingRect(cnts[0])
-# cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
-# cv2.imshow("Hand contours with bounding box",original_image)
-# close the image window when a key is pressed
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-# quit()
-ax[0, 0].imshow(mark_boundaries(img, segments_fz))
-ax[0, 0].set_title("Felzenszwalbs's method")
-plt.show()
+img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+# calculated contours
+_,cnts,_ = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+# sort contours from highest to lowest
+cnts= sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
+cv2.drawContours(original_image, cnts,0, (0, 255, 0), 3)
+print(cnts)
+# make a bounding box to the hand
+# later make the box size constant so that HOGS works well
+x,y,w,h = cv2.boundingRect(cnts[0])
+cv2.rectangle(img,(x,y),(x+w,y+h),(0,255,0),2)
+cv2.imshow("Hand contours with bounding box",original_image)
+#close the image window when a key is pressed
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+quit()
+# ax[0, 0].imshow(mark_boundaries(img, segments_fz))
+# ax[0, 0].set_title("Felzenszwalbs's method")
+# plt.show()
