@@ -11,10 +11,10 @@ from skimage.segmentation import felzenszwalb, slic, quickshift, watershed
 from skimage.segmentation import mark_boundaries
 from skimage.util import img_as_float
 # construct the argument parse and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image", help="path to the image")
-ap.add_argument("-k", "--kvalue", help="num segmentations")
-args = vars(ap.parse_args())
+# ap = argparse.ArgumentParser()
+# ap.add_argument("-i", "--image", help="path to the image")
+# ap.add_argument("-k", "--kvalue", help="num segmentations")
+# args = vars(ap.parse_args())
 
 # start timer
 start = time.time()
@@ -42,24 +42,13 @@ while(1):
 
     # threshold the image to remove random blue noise from the image
     _,thresh = cv2.threshold(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),127,255,cv2.THRESH_BINARY)
-    for i in range(len(img)):
-        for j in range(len(img[i])):
-            # chooses the segment that has the color of the hand
-            if(not thresh[i,j] == 0):
-                segmentColor = segments_fz[i,j]
-                has_color = True
-                break
-        # break out of the first for loop
-        if(has_color):
-            break
-    for i in range(len(segments_fz)):
-        for y in range(len(segments_fz[i])):
-            if(segments_fz[i][y]==segmentColor):
-                segments_fz[i][y] = 1
-                img[i,y] = [255,255,255]
-            else:
-                segments_fz[i][y] = 0
-                img[i,y] = [0,0,0]
+    # finds the segment color when there are threshold values
+    indicies = np.where(thresh == 1)
+    segmentColor = segments_fz[indicies]
+    # vectorized approach
+    indicies = np.where(segments_fz == segmentColor)
+    img[indicies] = [255,255,255]
+    img[not indicies] = [0,0,0]
     # test if the correct segment color was chosen
     #print(segmentColor)
     # test if the whole hand was extracted
