@@ -21,20 +21,10 @@ start = time.time()
 # load the image
 img = cv2.imread(args["image"])
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-#image = cv2.GaussianBlur(image, (101,101), 0)
-
-
 img = img[::2, ::2]
 # save a copy
 original_image = img.copy()
-#print(img)
 segments_fz = felzenszwalb(img, scale=1, sigma=0.9, min_size=1000)
-fig, ax = plt.subplots(2, 2, figsize=(10, 10), sharex=True, sharey=True,
-                 subplot_kw={'adjustable': 'box-forced'})
-# returns the index of unique segments in a flattened array
-_,index_Uniques = np.unique(segments_fz,return_index = True)
-# flattens the original image array so that it can be compared with the uniques
-flat_image = np.ravel(img)
 # segment color is the color of the hand
 segmentColor = None
 has_color = False
@@ -49,11 +39,9 @@ img = cv2.bitwise_and(img,img,mask = rangeMask)
 
 # threshold the image to remove random blue noise from the image
 _,thresh = cv2.threshold(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),127,255,cv2.THRESH_BINARY)
-#cv2.imwrite("test.3.png",thresh)
 for i in range(len(img)):
     for j in range(len(img[i])):
         # chooses the segment that has the color of the hand
-        #print(img[i,j])
         if(not thresh[i,j] == 0):
             print(img[i,j])
             segmentColor = segments_fz[i,j]
@@ -66,7 +54,6 @@ for i in range(len(segments_fz)):
     for y in range(len(segments_fz[i])):
         if(segments_fz[i][y]==segmentColor):
             segments_fz[i][y] = 1
-            #print(img[i][y])
             img[i,y] = [255,255,255]
         else:
             segments_fz[i][y] = 0
@@ -94,6 +81,3 @@ print(end - start)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 quit()
-# ax[0, 0].imshow(mark_boundaries(img, segments_fz))
-# ax[0, 0].set_title("Felzenszwalbs's method")
-# plt.show()
