@@ -3,7 +3,7 @@ import numpy as np
 import argparse
 import cv2
 import matplotlib.pyplot as plt
-
+import time
 from skimage.data import astronaut
 from skimage.color import rgb2gray
 from skimage.filters import sobel
@@ -16,6 +16,8 @@ ap.add_argument("-i", "--image", help="path to the image")
 ap.add_argument("-k", "--kvalue", help="num segmentations")
 args = vars(ap.parse_args())
 
+# start timer
+start = time.time()
 # load the image
 img = cv2.imread(args["image"])
 img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -79,12 +81,15 @@ _,cnts,_ = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 # sort contours from highest to lowest
 cnts= sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
 cv2.drawContours(original_image, cnts,0, (0, 255, 0), 3)
-print(cnts)
 # make a bounding box to the hand
 # later make the box size constant so that HOGS works well
 x,y,w,h = cv2.boundingRect(cnts[0])
 cv2.rectangle(original_image,(x,y),(x+w,y+h),(0,255,0),2)
 cv2.imshow("Hand contours with bounding box",original_image)
+cv2.imwrite("hand.png",original_image)
+# stop the clock
+end = time.time()
+print(end - start)
 #close the image window when a key is pressed
 cv2.waitKey(0)
 cv2.destroyAllWindows()
