@@ -19,65 +19,74 @@ args = vars(ap.parse_args())
 # start timer
 start = time.time()
 # load the image
-img = cv2.imread(args["image"])
-img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-img = img[::2, ::2]
-# save a copy
-original_image = img.copy()
-segments_fz = felzenszwalb(img, scale=1, sigma=0.9, min_size=1000)
-# segment color is the color of the hand
-segmentColor = None
-has_color = False
-# convert to hsv for seperation
-hsv = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-# set limits of blue
-lower_blue = np.array([110, 50, 50])
-upper_blue = np.array([130, 255, 255])
-rangeMask = cv2.inRange(hsv, lower_blue, upper_blue)
-# apply color mask
-img = cv2.bitwise_and(img,img,mask = rangeMask)
+cap = cv2.VideoCapture(0)
+while(1):
+    ret,img = cap.read()
+    #img = cv2.imread(args["image"])
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = img[::2, ::2]
+    # save a copy
+    original_image = img.copy()
+    segments_fz = felzenszwalb(img, scale=1, sigma=0.9, min_size=1000)
+    # segment color is the color of the hand
+    segmentColor = None
+    has_color = False
+    # convert to hsv for seperation
+    hsv = cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
+    # set limits of blue
+    lower_blue = np.array([110, 50, 50])
+    upper_blue = np.array([130, 255, 255])
+    rangeMask = cv2.inRange(hsv, lower_blue, upper_blue)
+    # apply color mask
+    img = cv2.bitwise_and(img,img,mask = rangeMask)
 
-# threshold the image to remove random blue noise from the image
-_,thresh = cv2.threshold(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),127,255,cv2.THRESH_BINARY)
-for i in range(len(img)):
-    for j in range(len(img[i])):
-        # chooses the segment that has the color of the hand
-        if(not thresh[i,j] == 0):
-            print(img[i,j])
-            segmentColor = segments_fz[i,j]
-            has_color = True
+    # threshold the image to remove random blue noise from the image
+    _,thresh = cv2.threshold(cv2.cvtColor(img,cv2.COLOR_BGR2GRAY),127,255,cv2.THRESH_BINARY)
+    for i in range(len(img)):
+        for j in range(len(img[i])):
+            # chooses the segment that has the color of the hand
+            if(not thresh[i,j] == 0):
+                segmentColor = segments_fz[i,j]
+                has_color = True
+                break
+        # break out of the first for loop
+        if(has_color):
             break
-    # break out of the first for loop
-    if(has_color):
+    for i in range(len(segments_fz)):
+        for y in range(len(segments_fz[i])):
+            if(segments_fz[i][y]==segmentColor):
+                segments_fz[i][y] = 1
+                img[i,y] = [255,255,255]
+            else:
+                segments_fz[i][y] = 0
+                img[i,y] = [0,0,0]
+    # test if the correct segment color was chosen
+    #print(segmentColor)
+    # test if the whole hand was extracted
+    #cv2.imwrite("test2.png",img)
+    img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    # calculated contours
+    _,cnts,_ = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    # sort contours from highest to lowest
+    cnts= sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
+    # draw the first contour
+    cv2.drawContours(original_image, cnts,0, (0, 255, 0), 3)
+    # assumes that the hand is the biggest contour
+    # make a bounding box to the hand
+    # later make the box size constant so that HOGS works well
+    x,y,w,h = cv2.boundingRect(cnts[0])
+    cv2.rectangle(original_image,(x,y),(x+w,y+h),(0,255,0),2)
+    cv2.imshow("Hand contours with bounding box",original_image)
+    cv2.imwrite("hand.png",original_image)
+    k = cv2.waitKey(30) & 0xff
+    if k == 27:
         break
-for i in range(len(segments_fz)):
-    for y in range(len(segments_fz[i])):
-        if(segments_fz[i][y]==segmentColor):
-            segments_fz[i][y] = 1
-            img[i,y] = [255,255,255]
-        else:
-            segments_fz[i][y] = 0
-            img[i,y] = [0,0,0]
-# test if the correct segment color was chosen
-#print(segmentColor)
-# test if the whole hand was extracted
-#cv2.imwrite("test2.png",img)
-img = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-# calculated contours
-_,cnts,_ = cv2.findContours(img.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-# sort contours from highest to lowest
-cnts= sorted(cnts, key = cv2.contourArea, reverse = True)[:10]
-cv2.drawContours(original_image, cnts,0, (0, 255, 0), 3)
-# make a bounding box to the hand
-# later make the box size constant so that HOGS works well
-x,y,w,h = cv2.boundingRect(cnts[0])
-cv2.rectangle(original_image,(x,y),(x+w,y+h),(0,255,0),2)
-cv2.imshow("Hand contours with bounding box",original_image)
-cv2.imwrite("hand.png",original_image)
-# stop the clock
-end = time.time()
-print(end - start)
-#close the image window when a key is pressed
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-quit()
+    # stop the clock
+    end = time.time()
+    print(end - start)
+    #close the image window when a key is pressed
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    # quit
+cap.release()
+cv2.destroyAllWindows
