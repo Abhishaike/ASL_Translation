@@ -1,5 +1,6 @@
 import cv2
 from keras.models import load_model
+import numpy as np
 
 font = cv2.FONT_HERSHEY_SIMPLEX
 topRight = (10, 100)
@@ -9,16 +10,38 @@ lineType = 2
 
 model = load_model('keras_model.h5')
 
+img_height = 64
+img_width = 64
+
+y = 100
+x = 100
+h = 200
+w = 200
+
 cap = cv2.VideoCapture(0)
+
+
 
 while(True):
     # Capture frame-by-frame
     cat, frame = cap.read()
 
-    frameResized = cv2.resize(frame, (66, 76))
+    frameResized = crop_img = frame[y:y+h, x:x+w]
+
+    frameResized = cv2.resize(frameResized, (img_height, img_width))
     # Our operations on the frame come here
 
-    result = model.predict([frameResized])[0]  # Predict
+    cv2.rectangle(frame, (x,y),(x+w,y+h),(0,255,0),1)
+
+    cv2.imshow('frameResized',frameResized)
+
+    frameResized = np.expand_dims(frameResized, axis=0)
+    # frameResized.shape # (1,64,64,3)
+
+
+    result = model.predict(frameResized)[0]  # Predict
+
+    print(result)
     prediction = result.tolist().index(max(result))  # The index represents the number predicted in this case
 
     strToPrint0 = 'A: ' + str(round(result[0],3))
@@ -40,8 +63,11 @@ while(True):
     cv2.putText(frame, guess, (10, 280), font, fontScale, fontColor, lineType)
 
 
+
     # Display the resulting frame
     cv2.imshow('frame',frame)
+
+    
 
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
