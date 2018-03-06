@@ -20,3 +20,10 @@ You'll be given a few seconds to prepare. Make sure you have some webcam-viewing
 2. Type into terminal or command line: ```python3 data_collection.py -n YOUR_NAME -c None```
 
 As with before, you'll be given a few seconds to prepare. And also as before, make sure you have some way to view your web-cam activites, there should be NO hands ever on the screen. Diverse data is also important here, move around a little and hold up objects (of course, without ever showing your actual hands on camera). 
+
+
+***************************************
+
+Folder "databinary" contains training and test images.
+abc_cnn.py Generates the model from the 3 class training data.
+predict.py Uses the webcam to guess the letter in real time.  
