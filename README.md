@@ -24,6 +24,4 @@ As with before, you'll be given a few seconds to prepare. And also as before, ma
 
 ***************************************
 
-Folder "databinary" contains training and test images.
-abc_cnn.py Generates the model from the 3 class training data.
-predict.py Uses the webcam to guess the letter in real time.  
+Link to the Alex's data and built 24 class model  - https://drive.google.com/drive/folders/1VlhTLQ6MeMyVh-sVBBcnKz46i6Tx9ODn	
