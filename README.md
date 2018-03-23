@@ -20,3 +20,8 @@ You'll be given a few seconds to prepare. Make sure you have some webcam-viewing
 2. Type into terminal or command line: ```python3 data_collection.py -n YOUR_NAME -c None```
 
 As with before, you'll be given a few seconds to prepare. And also as before, make sure you have some way to view your web-cam activites, there should be NO hands ever on the screen. Diverse data is also important here, move around a little and hold up objects (of course, without ever showing your actual hands on camera). 
+
+
+***************************************
+
+Link to the Alex's data and built 24 class model  - https://drive.google.com/drive/folders/1VlhTLQ6MeMyVh-sVBBcnKz46i6Tx9ODn	

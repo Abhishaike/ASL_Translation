@@ -6,7 +6,11 @@ import argparse
 import sys
 
 def collect_specific_hand(character_wanted, name):
+<<<<<<< HEAD
     vs = VideoStream(-1).start() #start up the video stream
+=======
+    vs = VideoStream(1).start() #start up the video stream
+>>>>>>> origin/cnn
     if os.path.exists("hand/%s" % character_wanted): #if you don't have a file for the character you specified, it'll be created
         pass
     else:
@@ -24,7 +28,11 @@ def collect_specific_hand(character_wanted, name):
     return True
 
 def collect_not_hand(name):
+<<<<<<< HEAD
     vs = VideoStream(-1).start()
+=======
+    vs = VideoStream(1).start()
+>>>>>>> origin/cnn
     print("Starting data collection for non-hands in 5 seconds, get ready...")
     time.sleep(5)
     print("Collecting now!")
@@ -49,4 +57,7 @@ if __name__ == "__main__":
         collect_not_hand(args["name"].lower())
     else:
         collect_specific_hand(args["character"].lower(), args["name"].lower())
+<<<<<<< HEAD
     sys.exit(0)
+=======
+>>>>>>> origin/cnn
