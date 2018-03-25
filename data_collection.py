@@ -25,7 +25,6 @@ def collect_specific_hand(character_wanted, name):
 
 def collect_not_hand(name):
     vs = VideoStream(-1).start()
-    vs = VideoStream(1).start()
     print("Starting data collection for non-hands in 5 seconds, get ready...")
     time.sleep(5)
     print("Collecting now!")
