@@ -1,27 +1,20 @@
 from __future__ import print_function
 import keras
-# Using thenao input shape is (1, img_height, img_width )
-# While tensorflow uses(img_height, img_width, 1 )
-# The below setting makes keras use tensorflow format
 from keras import backend as K
-K.set_image_dim_ordering('tf')
-from keras.layers import Conv2D, MaxPooling2D, AveragePooling2D, Flatten, Input, BatchNormalization, Conv2D, Lambda, \
-    Dense, Dropout, SeparableConv2D
+from keras.layers import MaxPooling2D, Flatten, Input, BatchNormalization, Conv2D, \
+    Dense, Dropout, SeparableConv2D, Activation, Input
 from keras.models import Model
-from keras.layers import Conv2D, MaxPooling2D
-from keras.models import Sequential
-import matplotlib.pylab as plt
-from keras.preprocessing.image import ImageDataGenerator
-from keras.layers import Dense, Dropout, Activation, BatchNormalization, Input
-from keras.optimizers import Adam, SGD
+from keras.optimizers import SGD
 from keras.callbacks import LearningRateScheduler
 from keras.constraints import maxnorm
-import numpy
 
+import numpy
 import cv2
 import os
 
-epochs = 6
+K.set_image_dim_ordering('tf')
+
+epochs = 10
 batch_size = 32
 train_data_dir = 'data/train'
 validation_data_dir = 'data/test'
@@ -30,30 +23,13 @@ img_width = 100
 input_shape = (img_height, img_width, 1)
 num_classes = 3
 
-train_datagen = ImageDataGenerator(rescale=1./255,
-                                   horizontal_flip=True,
-                                   fill_mode="nearest",
-
-                                   )
-test_datagen = ImageDataGenerator(rescale=1./255)
-train_generator = train_datagen.flow_from_directory(
-    train_data_dir,
-    target_size=(img_height, img_width),
-    batch_size=batch_size,
-    class_mode='sparse')
-validation_generator = test_datagen.flow_from_directory(
-    validation_data_dir,
-    target_size=(img_height, img_width),
-    batch_size=batch_size,
-    class_mode='sparse')
-
 x_train = []
 y_train = []
 x_test = []
 y_test = []
-dir_count = -1
 
 # Loading x_train and y_train
+dir_count = -1
 for subdir, dirs, files in os.walk(train_data_dir):
     for file in files:
         image = cv2.imread(os.path.join(subdir, file))
@@ -61,6 +37,7 @@ for subdir, dirs, files in os.walk(train_data_dir):
         y_train.append(dir_count)
     dir_count+=1
 
+dir_count = -1
 for subdir, dirs, files in os.walk(validation_data_dir):
     for file in files:
         image = cv2.imread(os.path.join(subdir, file))
@@ -70,7 +47,6 @@ for subdir, dirs, files in os.walk(validation_data_dir):
 
 x_train = numpy.array(x_train)
 x_test = numpy.array(x_test)
-print(x_train.shape)
 
 InputImg = Input(shape = (100, 100, 3))
 
@@ -132,4 +108,4 @@ Model_Complete.fit(x_train, y_train,
                     validation_data=(x_test, y_test),
                     callbacks = [saveBestModel, earlyStopping, LearningRateScheduler(poly_decay)])
 
-Model_Complete.save('24class_no_preprocess_longer.h5')
+Model_Complete.save('3class_glove.h5')
