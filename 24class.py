@@ -48,6 +48,16 @@ for subdir, dirs, files in os.walk(validation_data_dir):
 x_train = numpy.array(x_train)
 x_test = numpy.array(x_test)
 
+
+datagen = ImageDataGenerator(
+    featurewise_center=True,
+    featurewise_std_normalization=True,
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    horizontal_flip=True)
+
+
 InputImg = Input(shape = (100, 100, 3))
 
 ConvModel = Conv2D(32, (3,3), padding = 'same', activation = 'relu', kernel_regularizer = 'l2')(InputImg)
