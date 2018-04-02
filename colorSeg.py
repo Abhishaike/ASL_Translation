@@ -9,17 +9,18 @@ global track_window
 
 
 def __init__():
+    # intitalize global variables
     global term_crit
     global track_window
-    roi_img = 
+    global roi_img
+    # intitalize the dimensions of the segmented box
     r, h, c, w = 75, 300, 150, 300
     term_crit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10000, 1000)
     track_window = (c, r, w, h)
 
 def calibration(img):
-    roi_img = img
-
-
+    global roi_img
+    roi_img= img
 def returnSegmented(img):
     global term_crit
     global roi_img

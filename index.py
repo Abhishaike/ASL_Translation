@@ -8,6 +8,7 @@ import colorSeg
 
 
 def streamProcessed():
+    # intitalize the color segmentation module
     colorSeg.__init__()
     iterator = 0
     numImages = 0
@@ -15,52 +16,56 @@ def streamProcessed():
     # load the image
     #Check if error given on run
     cap = cv2.VideoCapture(0)
-    calibrated = True
-    _, img = cap.read()
+    calibrated = False
+    # these lines of code are for a video for demonstrating the process
     # img = cv2.imread(args["image"])
-    fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    out = cv2.VideoWriter('testvid.avi', fourcc, 20.0, (640,480))
-    cv2.imshow("Tracking hand", img)
-    cv2.createTrackbar("Window Size", "Tracking hand", colorSeg.track_window[2], 400, colorSeg.updateRectangle);
+    #fourcc = cv2.VideoWriter_fourcc(*'XVID')
+    #out = cv2.VideoWriter('testvid.avi', fourcc, 20.0, (640,480))
     while (cap.isOpened):
-        # start timer
         _, img = cap.read()
-
         # img = img[::2, ::2]
         # img = img.copy()
         # img = cv2.imread(args["image"])
+
+        # hand is calibrated to the environment
         if calibrated:
+            _, img = cap.read()
+            cv2.imshow("Tracking hand", img)
+            cv2.createTrackbar("Window Size", "Tracking hand", colorSeg.track_window[2], 400, colorSeg.updateRectangle);
             processedimg, croppedImg = colorSeg.returnSegmented(img)
-            cv2.imshow("Tracking hand", processedimg)
             # cv2.createTrackbar("Window Size", "Tracking hand", track_window[2], 400, updateRectangle);
             overlay = img.copy()
             aslLetterIndex = 1
             cv2.putText(overlay, "Letter: " + alphabet[aslLetterIndex],
                         (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 3)
             cv2.addWeighted(overlay, .2, img, .8, 0, img)
+            cv2.imshow("Tracking hand", overlay)
         else:
-            cv2.rectangle(img, (200, 200), (230, 230), 255, 2)
-            cv2.imshow("Tracking hand", img)
-            overlay = img.copy()
-            cv2.putText(overlay, "Please place a section of your hand in the blue box and click the button",
-                        (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 3)
-            # cv2.createTrackbar("Window Size", "Tracking hand", track_window[2], 400, updateRectangle);
-            cv2.addWeighted(overlay, .2, img, .8, 0, img)
-            cv2.createButton("Calibrate", calibrate(img))
-            cv2.imshow(img)
+            while(True):
+                _, img = cap.read()
+                k = cv2.waitKey(30) & 0xff
+                # finish the calibration process by pressing the space bar
+                if k == 32:
+                    cv2.destroyWindow
+                    break
+                # draws the blue rectangle, change the tuple values to change the size of the rectangle
+                cv2.rectangle(img, (200, 200), (230, 230), 255, 2)
+                # copy the image before the text is applied
+                overlay = img.copy()
+                cv2.putText(overlay, "Please place the middle of your hand in the blue box and press the space bar to calibrate",
+                (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 3)
+                # cv2.createTrackbar("Window Size", "Tracking hand", track_window[2], 400, updateRectangle);
+                cv2.addWeighted(overlay, .2, img, .8, 0, img)
+                cv2.imshow("countdown",overlay)
+            calibrate(img[200:230,200:230])
+        calibrated = True
         k = cv2.waitKey(30) & 0xff
-
+        # breaks with esc
         if k == 27:
             break
         iterator += 1
-        # stop the clock
-        # print(end - start)
-        # close the image window when a key is pressed
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
-        # quit
     cap.release()
-    out.release()
+    #out.release()
     cv2.destroyAllWindows
 
 
