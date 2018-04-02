@@ -43,11 +43,28 @@ def meanshift(dst, img):
     croppedImg = img[y:y + h, x:x + w]
     return img2, croppedImg
 
-
-def returnSegmented(img):
+def calibration(cap):
+    while(True):
+        _,img = cap.read()
+        k = cv2.waitKey(30) & 0xff
+        # finish the calibration process by pressing the space bar
+        if k == 32:
+            cv2.destroyWindow
+            break
+        # draws the blue rectangle, change the tuple values to change the size of the rectangle
+        cv2.rectangle(img, (200, 200), (230, 230), 255, 2)
+        # copy the image before the text is applied
+        overlay = img.copy()
+        cv2.putText(overlay, "Please place the middle of your hand in the blue box and press the space bar to calibrate",
+        (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 3)
+        # cv2.createTrackbar("Window Size", "Tracking hand", track_window[2], 400, updateRectangle);
+        cv2.addWeighted(overlay, .2, img, .8, 0, img)
+        cv2.imshow("countdown",overlay)
+    return img[200:230,200:230]
+def returnSegmented(img,calibrated_roi):
     global term_crit
     # Replace with the image you want as your comparison
-    roi = cv2.imread('Hand Crop2.jpg')
+    roi = calibrated_roi
 
     hsv = cv2.cvtColor(roi, cv2.COLOR_RGB2HSV)
     mask = cv2.inRange(hsv, np.array((0., 60., 32.)), np.array((180., 255., 255.)))
@@ -113,27 +130,15 @@ cap = cv2.VideoCapture(1)
 f = TemporaryFile()
 old_time = time.time()
 current_time = time.time()
-
+# finds the initital region of interest
+roi = calibration(cap)
 while (True):
 
     # Capture frame-by-frame
     cat, frame = cap.read(1)
 
-    if tracking_type is "Static":
-        frameResized = frame[y:y + h, x:x + w]
-
-        frameResized = cv2.resize(frameResized, (img_height, img_width))
-        # Our operations on the frame come here
-        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 1)
-
-        # Converting to black white like the training images
-        frameResized = cv2.cvtColor(frameResized, cv2.COLOR_BGR2GRAY)
-
-        # reshaping for nn
-        frameResized = frameResized.reshape(1, img_height, img_width, 1)
-
     if tracking_type is "Dynamic":
-        img, crop = returnSegmented(frame)
+        img, crop = returnSegmented(frame,roi)
         crop = cv2.cvtColor(crop, cv2.COLOR_RGB2GRAY)
 
         crop = cv2.resize(crop, (img_width, img_height))
@@ -166,4 +171,3 @@ while (True):
 # When everything done, release the capture
 cap.release()
 cv2.destroyAllWindows()
-
