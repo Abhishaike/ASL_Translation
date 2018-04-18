@@ -1,4 +1,5 @@
 # ASL_Translation
+![demo](https://user-images.githubusercontent.com/20051469/38962344-7511cd4c-4332-11e8-8666-f1485ca24ee7.gif)
 
 **First time seeing this directory? Follow these 3 steps:**
 1. Go to a directory that you're okay with putting these projects files in 
