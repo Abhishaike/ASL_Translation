@@ -2,15 +2,8 @@ import cv2
 import numpy as np
 from keras.models import load_model
 from PIL import Image
-
+from threading import Thread
 from gtts import gTTS
-
-# This module is imported so that we can
-# play the converted audio
-import os
-import winsound
-import time
-
 
 def __init__():
     global term_crit
@@ -18,17 +11,6 @@ def __init__():
     r, h, c, w = 75, 300, 150, 300
     term_crit = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10000, 1000)
     track_window = (c, r, w, h)
-
-
-def preprocess(image):
-    open_cv_image = np.array(image)
-    blur = cv2.GaussianBlur(open_cv_image, (3, 3), 2)
-    th3 = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
-    ret, processed_image = cv2.threshold(th3, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
-    im_pil = Image.fromarray(processed_image)
-    th3 = np.array(im_pil)
-    return th3
-
 
 def meanshift(dst, img):
     global track_window
@@ -55,8 +37,12 @@ def calibration(cap):
         cv2.rectangle(img, (200, 200), (230, 230), 255, 2)
         # copy the image before the text is applied
         overlay = img.copy()
-        cv2.putText(overlay, "Please place the middle of your hand in the blue box and press the space bar to calibrate",
-        (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 255), 3)
+        cv2.putText(overlay, "Please place the middle of your hand in the blue box",
+        (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+        cv2.putText(overlay,
+                    "and press the space bar to calibrate.",
+                    (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+
         # cv2.createTrackbar("Window Size", "Tracking hand", track_window[2], 400, updateRectangle);
         cv2.addWeighted(overlay, .2, img, .8, 0, img)
         cv2.imshow("countdown",overlay)
@@ -83,34 +69,18 @@ def returnSegmented(img,calibrated_roi):
     return img2, croppedImg
 
 
-def playSound(letter):
-    # The text that you want to convert to audio
-    mytext = letter
-    # Language in which you want to convert
-    language = 'en'
-
-    # Passing the text and language to the engine,
-    # here we have marked slow=False. Which tells
-    # the module that the converted audio should
-    # have a high speed
-    myobj = gTTS(text=mytext, lang=language, slow=False)
-
-    # Saving the converted audio in a mp3 file named
-    # welcome
-    myobj.write_to_fp(f)
-    winsound.PlaySound(f, winsound.SND_FILENAME)
+def playSound(guessed_letter):
+    playsound("sound/" + str(guessed_letter) + ".mp3")
     return
-
 
 __init__()
 font = cv2.FONT_HERSHEY_SIMPLEX
 topRight = (10, 100)
-fontScale = 0.9
+fontScale = 2
 fontColor = (255, 255, 255)
 lineType = 2
 
-tracking_type = "Dynamic"
-model = load_model('26_aug_kag+cust.h5')
+model = load_model('model.h5')
 
 img_height = 28
 img_width = 28
@@ -125,49 +95,44 @@ textStartingY = 100
 letter_map = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
               'v', 'w', 'x', 'y', 'z']
 
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
-f = TemporaryFile()
-old_time = time.time()
-current_time = time.time()
 # finds the initital region of interest
 roi = calibration(cap)
+
+# fourcc = cv2.VideoWriter_fourcc(*'XVID')
+# out = cv2.VideoWriter('testvid.avi', fourcc, 20.0, (640,480))
+
 while (True):
 
     # Capture frame-by-frame
     cat, frame = cap.read(1)
 
-    if tracking_type is "Dynamic":
-        img, crop = returnSegmented(frame,roi)
-        crop = cv2.cvtColor(crop, cv2.COLOR_RGB2GRAY)
+    img, crop = returnSegmented(frame,roi)
+    crop = cv2.cvtColor(crop, cv2.COLOR_RGB2GRAY)
 
-        crop = cv2.resize(crop, (img_width, img_height))
+    crop = cv2.resize(crop, (img_width, img_height))
 
-        cv2.imshow('Crop', crop)
 
-        frameResized = crop.reshape(1, img_height, img_width, 1)
+    frameResized = crop.reshape(1, img_height, img_width, 1)
 
     result = model.predict(frameResized, batch_size=1)[0]  # Predict
 
     guessed_letter = letter_map[np.argmax(result)]
-    for i in range(0, len(result)):
-        strToPrint0 = str(letter_map[i]) + ': ' + str(round(result[i], 2))
-        if (i < 13):  # Adds second row of 12 characters starting back at the top
-            cv2.putText(frame, strToPrint0, (10, textStartingY + i * 30), font, fontScale, fontColor, lineType)
-        else:
-            cv2.putText(frame, strToPrint0, (300, textStartingY + (i - 12) * 30), font, fontScale, fontColor, lineType)
-    cv2.putText(frame, guessed_letter, (220, textStartingY), font, fontScale, fontColor, lineType)
+    # for i in range(0, len(result)):
+    #     strToPrint0 = str(letter_map[i]) + ': ' + str(round(result[i], 2))
+    #     if (i < 13):  # Adds second row of 12 characters starting back at the top
+    #         cv2.putText(frame, strToPrint0, (10, textStartingY + i * 30), font, fontScale, fontColor, lineType)
+    #     else:
+    #         cv2.putText(frame, strToPrint0, (300, textStartingY + (i - 12) * 30), font, fontScale, fontColor, lineType)
+    cv2.putText(frame, guessed_letter, (20, 60), font, fontScale, fontColor, lineType)
 
-    if time.time() - old_time > 5:
-        old_time = time.time()
-        print ("it's been a minute")
     cv2.imshow('frame', frame)
-
-    playSound(guessed_letter)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 # When everything done, release the capture
+# out.release()
 cap.release()
 cv2.destroyAllWindows()
