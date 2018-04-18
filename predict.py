@@ -2,8 +2,6 @@ import cv2
 import numpy as np
 from keras.models import load_model
 from PIL import Image
-from threading import Thread
-from gtts import gTTS
 
 def __init__():
     global term_crit

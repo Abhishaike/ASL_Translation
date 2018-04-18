@@ -24,4 +24,12 @@ As with before, you'll be given a few seconds to prepare. And also as before, ma
 
 ***************************************
 
+# Run the model
+
+Run predict.py.
+Needs cv2, numpy, keras and PIL installed.
+
+# Train
+
+First download the data from.
 Link to the Alex's data and built 24 class model  - https://drive.google.com/drive/folders/1VlhTLQ6MeMyVh-sVBBcnKz46i6Tx9ODn	
