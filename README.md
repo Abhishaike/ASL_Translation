@@ -37,4 +37,4 @@ As with before, you'll be given a few seconds to prepare. And also as before, ma
 **Training a new model**
 
 Download https://drive.google.com/file/d/1PEAWb_f86C8IZEkCujE7fohXrDaNVf0c/view?usp=sharing and extract it to the repository.
-Run 26class.py. This will train the model from the data in the ```\data-one\``` directory along with the kaggle dataset. It separates training and testing data automatically, but within the data file there must be a different file for each class. The new model will be saved as model.h5, and will overwrite any model files you already have in the same directory.
+Run train.py. This will train the model from the data in the ```\data-one\``` directory along with the kaggle dataset. It separates training and testing data automatically, but within the data file there must be a different file for each class. The new model will be saved as model.h5, and will overwrite any model files you already have in the same directory.
