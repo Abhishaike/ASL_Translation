@@ -12,7 +12,11 @@ You'll have to repeat step 3 if you ever navigate to a different directory~
 
 # Run the model
 
-Run predict.py. This will open up your webcam and draw a small blue box on the screen. Place the palm of your hand so that the middle of your palm covers the box, then press space. Then, the box should follow your hand around and the translations of your hand symbols should appear in white at the top left of the screen. Translations are better if you keep your face out of the box and do it on a neutral background.
+1. Run predict.py. 
+2. This will open up your webcam and draw a small blue box on the screen. 
+3. Place the palm of your hand so that the middle of your palm covers the box, then press space. 
+4. The box should follow your hand around, and the translations of your hand symbols should appear in white at the top left of the screen. Translations are better if you keep your face out of the box and do it on a neutral background.
+
 Needs cv2, numpy, keras and PIL installed.
 
 ***************************************
