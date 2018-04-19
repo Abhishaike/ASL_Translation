@@ -1,4 +1,4 @@
-# ASL_Translation
+# C-ASL (Convolutional American Sign Language)
 ![demo](https://user-images.githubusercontent.com/20051469/38962344-7511cd4c-4332-11e8-8666-f1485ca24ee7.gif)
 
 **First time seeing this directory? Follow these 3 steps:**
@@ -34,4 +34,4 @@ As with before, you'll be given a few seconds to prepare. And also as before, ma
 
 **Training a new model**
 
-Run 26class.py. This will train the model from the data in the ```\data\``` directory. It separates training and testing data automatically, but within the data file there must be a different file for each class.
+Run 26class.py. This will train the model from the data in the ```\data\``` directory. It separates training and testing data automatically, but within the data file there must be a different file for each class. The new model will be saved as model.h5, and will overwrite any model files you already have in the same directory.
