@@ -8,11 +8,17 @@
 
 You'll have to repeat step 3 if you ever navigate to a different directory~
 
+***************************************
+
+# Run the model
+
+Run predict.py. This will open up your webcam and draw a small blue box on the screen. Place the palm of your hand so that the middle of your palm covers the box, then press space. Then, the box should follow your hand around and the translations of your hand symbols should appear in white at the top left of the screen. Translations are better if you keep your face out of the box and do it on a neutral background.
+Needs cv2, numpy, keras and PIL installed.
 
 ***************************************
 
 
-**Want to save training data? Follow step 1 for hand-data, or step 2 for non-hand-data**
+**Want to create new training data? Follow step 1 for hand-data, or step 2 for non-hand-data**
 1. Type into terminal or command line: ```python3 data_collection.py -n YOUR_NAME -c CHARACTER_WANTED```. 
 
 You'll be given a few seconds to prepare. Make sure you have some webcam-viewing application open during this ('Photobooth' for mac), so you can make sure that your hand is taking up a lot of the screen and is correctly positioned. Remember to move your hand angle around just *little* bit during the video process, diverse data is a good thing! However, never do any large angle changes, our feature extraction technique is NOT rotation-invariant. We will be using this: http://lifeprint.com/asl101/fingerspelling/images/signlanguageabc02.jpg as our ASL reference. Finally, always use your right hand when collecting data!
@@ -24,11 +30,6 @@ As with before, you'll be given a few seconds to prepare. And also as before, ma
 
 
 ***************************************
-
-# Run the model
-
-Run predict.py.
-Needs cv2, numpy, keras and PIL installed.
 
 # Train
 
