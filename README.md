@@ -1,6 +1,6 @@
 # C-ASL (Convolutional American Sign Language)
 ![demo](https://user-images.githubusercontent.com/20051469/38962344-7511cd4c-4332-11e8-8666-f1485ca24ee7.gif)
-
+"https://user-images.githubusercontent.com/9153010/38968070-858746d0-434f-11e8-8fe3-9b227597ba44.png"
 **First time seeing this directory? Follow these 3 steps:**
 1. Go to a directory that you're okay with putting these projects files in 
 2. Type into terminal or command line: ```git clone https://github.com/Abhishaike/ASL_Translation.git```
