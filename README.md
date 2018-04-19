@@ -17,6 +17,10 @@ Needs cv2, numpy, keras and PIL installed.
 
 ***************************************
 
+# Train
+
+First download the data from.
+Link to the Alex's data and built 24 class model  - https://drive.google.com/drive/folders/1VlhTLQ6MeMyVh-sVBBcnKz46i6Tx9ODn	
 
 **Want to create new training data? Follow step 1 for hand-data, or step 2 for non-hand-data**
 1. Type into terminal or command line: ```python3 data_collection.py -n YOUR_NAME -c CHARACTER_WANTED```. 
@@ -28,10 +32,6 @@ You'll be given a few seconds to prepare. Make sure you have some webcam-viewing
 
 As with before, you'll be given a few seconds to prepare. And also as before, make sure you have some way to view your web-cam activites, there should be NO hands ever on the screen. Diverse data is also important here, move around a little and hold up objects (of course, without ever showing your actual hands on camera). 
 
+**Training a new model**
 
-***************************************
-
-# Train
-
-First download the data from.
-Link to the Alex's data and built 24 class model  - https://drive.google.com/drive/folders/1VlhTLQ6MeMyVh-sVBBcnKz46i6Tx9ODn	
+Run 26class.py. This will train the model from the data in the ```\data\``` directory. It separates training and testing data automatically, but within the data file there must be a different file for each class.
